@@ -1,3 +1,5 @@
+version: "3.8"
+
 volumes:
   postgres-data:
 
@@ -15,10 +17,30 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
     volumes:
       - ..:/workspaces:cached
-    command: sleep infinity
+      - ~/.n8n:/home/node/.n8n
+    depends_on:
+      - postgres
     environment:
-      DB_POSTGRESDB_HOST: postgres
-      DB_TYPE: postgresdb
-      DB_POSTGRESDB_PASSWORD: password
+      # Base de datos
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=postgres
+      - DB_POSTGRESDB_PASSWORD=password
+
+      # Exponer el host y puerto interno de n8n
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+
+      # Dominio y protocolo públicos
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://dashboard.flux1a.com.ar/
+
+    # Arranca n8n en modo normal (no sleep)
+    command: ["n8n", "start"]
