@@ -40,7 +40,7 @@ services:
 
       # Dominio y protocolo públicos
       - N8N_PROTOCOL=https
-      - WEBHOOK_URL=https://dashboard.flux1a.com.ar/
+      - WEBHOOK_URL=https://agent.flux1a.com.ar/
 
     # Arranca n8n en modo normal (no sleep)
     command: ["n8n", "start"]
